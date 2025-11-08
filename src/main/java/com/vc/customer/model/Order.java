@@ -24,6 +24,9 @@ public class Order extends BaseAudit {
 	private Double totalAmount;
 	@Column(length = 10)
 	private String currency = "INR";
+	
+	@JoinColumn(name = "customer_id", nullable = false, unique = true)
+	private Customer customer;
 	public Long getId() {
 		return id;
 	}

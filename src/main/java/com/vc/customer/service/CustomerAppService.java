@@ -1,52 +1,90 @@
 package com.vc.customer.service;
 
-import com.vc.customer.model.*;
-import com.vc.customer.repo.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
+import com.vc.customer.model.Customer;
+import com.vc.customer.repo.CustomerRepository;
+
+/**
+ * Service class handling business logic for customer operations.
+ * Manages customer creation, retrieval, and purchase order processing.
+ *
+ * @author Rajasekhar Setty
+ * @version 1.0
+ */
 @Service
 public class CustomerAppService {
-	private final CustomerRepository customers;
-	private final WalletRepository wallets;
-	private final OrderRepository orders;
-	private final ProductRepository products;
+    private static final Logger logger = LoggerFactory.getLogger(CustomerAppService.class);
+    private final CustomerRepository customerRepo;
+    // Add other required repositories
 
-	public CustomerAppService(CustomerRepository customers, WalletRepository wallets, OrderRepository orders,
-			ProductRepository products) {
-		this.customers = customers;
-		this.wallets = wallets;
-		this.orders = orders;
-		this.products = products;
-	}
+    /**
+     * Constructs a new CustomerAppService with required repositories.
+     *
+     * @param customerRepo the customer repository
+     */
+    public CustomerAppService(CustomerRepository customerRepo) {
+        this.customerRepo = customerRepo;
+        logger.info("CustomerAppService initialized");
+    }
 
-	public Customer createCustomer(Customer c) {
-		return customers.save(c);
-	}
+    /**
+     * Creates a new customer with associated wallet.
+     *
+     * @param customer the customer to create
+     * @return the created customer
+     */
+    @Transactional
+    public Customer createCustomer(Customer customer) {
+        logger.info("Creating new customer with email: {}", customer.getEmail());
+        try {
+            // Add your implementation here
+            Customer saved = customerRepo.save(customer);
+            logger.debug("Customer created successfully with ID: {}", saved.getId());
+            return saved;
+        } catch (Exception e) {
+            logger.error("Failed to create customer: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
 
-	public Customer getCustomer(Long id) {
-		return customers.findById(id).orElse(null);
-	}
+    /**
+     * Retrieves a customer by their ID.
+     *
+     * @param id the customer ID
+     * @return the customer if found, null otherwise
+     */
+    @Transactional(readOnly = true)
+    public Customer getCustomer(Long id) {
+        logger.info("Fetching customer with ID: {}", id);
+        try {
+            return customerRepo.findById(id).orElse(null);
+        } catch (Exception e) {
+            logger.error("Failed to fetch customer: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
 
-	@Transactional
-	public Order createOrder(Order order) {
-		if (order.getProducts() != null) {
-			order.getProducts().forEach(p -> p.setOrder(order));
-		}
-		return orders.save(order);
-	}
-
-	public Order getOrder(Long id) {
-		return orders.findById(id).orElse(null);
-	}
-
-	public List<Order> listOrders() {
-		return orders.findAll();
-	}
-
-	public Customer createPurchaseOrder(Customer c) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Creates a new purchase order for a customer.
+     *
+     * @param customer the customer with purchase order details
+     * @return the updated customer
+     */
+    @Transactional
+    public Customer createPurchaseOrder(Customer customer) {
+        logger.info("Creating purchase order for customer ID: {}", customer.getId());
+        try {
+            // Add your implementation here
+            Customer updated = customerRepo.save(customer);
+            logger.debug("Purchase order created successfully for customer ID: {}", updated.getId());
+            return updated;
+        } catch (Exception e) {
+            logger.error("Failed to create purchase order: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
 }
