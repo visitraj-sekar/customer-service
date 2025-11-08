@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.vc.customer.exception.CustomerNotFounException;
 import com.vc.customer.model.Customer;
 import com.vc.customer.model.Order;
 import com.vc.customer.model.Wallet;
@@ -67,9 +68,10 @@ public class CustomerAppService {
      *
      * @param id the customer ID
      * @return the customer if found, null otherwise
+     * @throws CustomerNotFounException 
      */
     @Transactional(readOnly = true)
-    public Customer getCustomer(Long id) {
+    public Customer getCustomer(Long id) throws CustomerNotFounException {
         logger.info("Fetching customer with ID: {}", id);
         try {
         	Customer customer = customerRepo.findById(id).orElse(new Customer());
@@ -78,7 +80,7 @@ public class CustomerAppService {
             return customer;
         } catch (Exception e) {
             logger.error("Failed to fetch customer: {}", e.getMessage(), e);
-            throw e;
+            throw new CustomerNotFounException("Not Found");
         }
     }
 

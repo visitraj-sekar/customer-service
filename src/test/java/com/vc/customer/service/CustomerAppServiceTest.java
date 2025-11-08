@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.vc.customer.exception.CustomerNotFounException;
 import com.vc.customer.model.Customer;
 import com.vc.customer.model.Order;
 import com.vc.customer.model.Wallet;
@@ -90,7 +91,7 @@ class CustomerAppServiceTest {
 
     @Test
     @DisplayName("Should successfully retrieve a customer by ID")
-    void getCustomer_Success() {
+    void getCustomer_Success() throws CustomerNotFounException {
         when(customerRepo.findById(1L)).thenReturn(Optional.of(testCustomer));
 
         Customer result = customerAppService.getCustomer(1L);
@@ -105,7 +106,7 @@ class CustomerAppServiceTest {
 
     @Test
     @DisplayName("Should return null when customer is not found")
-    void getCustomer_NotFound() {
+    void getCustomer_NotFound() throws CustomerNotFounException {
         when(customerRepo.findById(1L)).thenReturn(Optional.empty());
 
         Customer result = customerAppService.getCustomer(1L);
