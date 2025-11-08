@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: customer-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/customermngmt
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: customerschema
+    open-in-view: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+server:
+  port: 8081

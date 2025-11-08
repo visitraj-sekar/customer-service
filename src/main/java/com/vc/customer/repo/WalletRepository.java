@@ -1,0 +1,1 @@
+package com.vc.customer.repo; import com.vc.customer.model.Wallet; import org.springframework.data.jpa.repository.JpaRepository; public interface WalletRepository extends JpaRepository<Wallet, Long> {}
