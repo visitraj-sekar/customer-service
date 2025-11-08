@@ -1,5 +1,7 @@
 package com.vc.customer.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -56,6 +58,7 @@ public class Product extends BaseAudit {
 	public void setOrder_quantity(Integer order_quantity) {
 		this.order_quantity = order_quantity;
 	}
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", nullable = false)
 	private Order order;

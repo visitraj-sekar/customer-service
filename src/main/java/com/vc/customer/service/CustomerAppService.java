@@ -1,12 +1,17 @@
 package com.vc.customer.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.vc.customer.model.Customer;
+import com.vc.customer.model.Order;
+import com.vc.customer.model.Wallet;
 import com.vc.customer.repo.CustomerRepository;
+import com.vc.customer.repo.WalletRepository;
 
 /**
  * Service class handling business logic for customer operations.
@@ -19,6 +24,7 @@ import com.vc.customer.repo.CustomerRepository;
 public class CustomerAppService {
     private static final Logger logger = LoggerFactory.getLogger(CustomerAppService.class);
     private final CustomerRepository customerRepo;
+    private final WalletRepository walletRepository;
     // Add other required repositories
 
     /**
@@ -26,8 +32,10 @@ public class CustomerAppService {
      *
      * @param customerRepo the customer repository
      */
-    public CustomerAppService(CustomerRepository customerRepo) {
+    public CustomerAppService(CustomerRepository customerRepo, WalletRepository walletRepository) {
         this.customerRepo = customerRepo;
+        this.walletRepository = walletRepository;
+        	
         logger.info("CustomerAppService initialized");
     }
 
@@ -42,6 +50,9 @@ public class CustomerAppService {
         logger.info("Creating new customer with email: {}", customer.getEmail());
         try {
             // Add your implementation here
+            
+            Wallet wallet = customer.getWallet();
+            wallet.setCustomer(customer);
             Customer saved = customerRepo.save(customer);
             logger.debug("Customer created successfully with ID: {}", saved.getId());
             return saved;
@@ -61,7 +72,10 @@ public class CustomerAppService {
     public Customer getCustomer(Long id) {
         logger.info("Fetching customer with ID: {}", id);
         try {
-            return customerRepo.findById(id).orElse(null);
+        	Customer customer = customerRepo.findById(id).orElse(new Customer());
+        	Wallet wallet = walletRepository.findByCustomer_Id(id).get();
+            customer.setWallet(wallet);
+            return customer;
         } catch (Exception e) {
             logger.error("Failed to fetch customer: {}", e.getMessage(), e);
             throw e;
@@ -79,6 +93,10 @@ public class CustomerAppService {
         logger.info("Creating purchase order for customer ID: {}", customer.getId());
         try {
             // Add your implementation here
+        	List<Order> orders = customer.getOrders();
+        	
+        	orders.forEach(order -> order.setCustomer(customer));
+        	
             Customer updated = customerRepo.save(customer);
             logger.debug("Purchase order created successfully for customer ID: {}", updated.getId());
             return updated;

@@ -1,6 +1,8 @@
 package com.vc.customer.web;
 
 import com.vc.customer.model.Customer;
+import com.vc.customer.model.Wallet;
+import com.vc.customer.repo.WalletRepository;
 import com.vc.customer.service.CustomerAppService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

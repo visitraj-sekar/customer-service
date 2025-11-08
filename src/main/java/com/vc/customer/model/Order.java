@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,8 +17,8 @@ public class Order extends BaseAudit {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(nullable = false)
-	private Long customerId;
+	
+	@JsonManagedReference
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Product> products = new ArrayList<>();
 	@Column(nullable = false, length = 30)
@@ -25,19 +27,23 @@ public class Order extends BaseAudit {
 	@Column(length = 10)
 	private String currency = "INR";
 	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id", nullable = false, unique = true)
 	private Customer customer;
+	
+	
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getCustomerId() {
-		return customerId;
+
+	public Customer getCustomer() {
+		return customer;
 	}
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 	public List<Product> getProducts() {
 		return products;
