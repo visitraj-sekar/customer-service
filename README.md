@@ -69,9 +69,66 @@ Stores and retrieves customers, merchants, wallets, and purchase orders.
 
 | Method | Endpoint | Description |
 |--------|-----------|-------------|
+| `POST` | `/customers/` | Create Customer and Wallet Detais |
+
+	API Request format:
+
+	{
+	  "name": "Ananya Rao",
+	  "email": "ananya.rao@example.com",
+	  "wallet": {
+		"balance": 5000.00,
+		"currency": "INR"
+	  }
+	}
+
+
 | `GET` | `/customers/{id}` | Get customer details including wallet |
-| `POST` | `/orders` | Create a new order (list of products with `order_quantity`) |
-| `GET` | `/orders/{orderId}` | Retrieve order details |
+
+		API Response:
+		{
+		  "id": 101,
+		  "name": "Ananya Rao",
+		  "email": "ananya.rao@example.com",
+		  "wallet": {
+			"id": 201,
+			"customerId": 101,
+			"balance": 5000.00,
+			"currency": "INR"
+		  }
+		}
+| `POST` | `/purchaseOrders` | Create a new order (list of products with `order_quantity`) |
+		POST API Request
+
+		{
+		  "name": "Ananya Rao",
+		  "email": "ananya.rao@example.com",
+		  "orders": [
+			{
+			  "status": "CREATED",
+			  "currency": "INR",
+			  "products": [
+				{
+				  "name": "Wireless Mouse",
+				  "description": "2.4 GHz ergonomic mouse with USB receiver",
+				  "price": 799.00,
+				  "currency": "INR",
+				  "merchantId": 501,
+				  "order_quantity": 1
+				},
+				{
+				  "name": "Mechanical Keyboard",
+				  "description": "RGB backlit keyboard with blue switches",
+				  "price": 3499.00,
+				  "currency": "INR",
+				  "merchantId": 501,
+				  "order_quantity": 1
+				}
+			  ]
+			}
+		  ]
+		}
+
 
 **Entities:**
 
@@ -201,8 +258,7 @@ Manages products and stock levels.
 | Method | Endpoint | Description |
 |--------|-----------|-------------|
 | `GET` | `/products` | List all products |
-| `POST` | `/products/validate` | Validate stock |
-| `POST` | `/products/update` | Update stock after order |
+| `POST` | `/products/update` | Validate and Update stock after order |
 
 **Entity:**
 
